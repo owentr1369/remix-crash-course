@@ -75,9 +75,12 @@ export const users: IUser[] = [
 ];
 
 export const loginUser = (user: IUser) => {
-  return users.find(
+  const existingUser = users.find(
     (u) => u.email === user.email && u.password === user.password
   );
+  if (!existingUser) {
+    users.push(user);
+  }
 };
 
 export const findUser = (id: number) => {
