@@ -73,3 +73,26 @@ export const users: IUser[] = [
     password: "ivypass",
   },
 ];
+
+export const loginUser = (user: IUser) => {
+  return users.find(
+    (u) => u.email === user.email && u.password === user.password
+  );
+};
+
+export const findUser = (id: number) => {
+  return users.find((user) => user.id === id);
+};
+
+export const findUserByEmailAndPassword = (email: string, password: string) => {
+  return users.find(
+    (user) => user.email === email && user.password === password
+  );
+};
+
+export const deleteUser = (id: number) => {
+  const index = users.findIndex((user) => user.id === id);
+  if (index !== -1) {
+    users.splice(index, 1);
+  }
+};
