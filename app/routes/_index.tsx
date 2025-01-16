@@ -1,5 +1,12 @@
 import type { MetaFunction } from "@remix-run/node";
-import { Form } from "@remix-run/react";
+import { Form, useActionData } from "@remix-run/react";
+import { addUser, findUserByEmailAndPassword, IUser } from "data/user";
+import { v4 as uuidv4 } from "uuid";
+
+type TActionData = {
+  error?: string;
+  user?: IUser;
+};
 
 export const meta: MetaFunction = () => {
   return [
@@ -8,11 +15,38 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export const action = async ({ request }: { request: Request }) => {
+  const formData = await request.formData();
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+  if (!email || !password || !name) {
+    return new Response("Invalid input", {
+      status: 400,
+    });
+  }
+  const newUser = {
+    name,
+    email,
+    password,
+    id: uuidv4(),
+  };
+  const existingUser = await findUserByEmailAndPassword(email, password);
+  if (!existingUser) {
+    addUser(newUser); // Add the new user to the list of users
+  }
+  const user = existingUser || newUser;
+  return Response.json({ user }, { status: 200 });
+};
+
 export default function Index() {
+  const actionData = useActionData();
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-500">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center text-gray-700">
+          Login
+        </h1>
         <Form method="post" className="space-y-6">
           <div>
             <label
