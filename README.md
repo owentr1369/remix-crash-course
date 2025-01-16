@@ -1,5 +1,7 @@
 # Welcome to Remix!
 
+![ScreenRecording2025-01-16at15 17 51-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/f521915e-2ac1-45e6-8c5c-f93166c70da4)
+
 - 📖 [Remix docs](https://remix.run/docs)
 
 ## Development
