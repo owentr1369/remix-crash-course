@@ -1,6 +1,7 @@
-import type { MetaFunction } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
+import type { ActionFunction, MetaFunction } from "@remix-run/node";
+import { Form, useActionData, useNavigate } from "@remix-run/react";
 import { addUser, findUserByEmailAndPassword, IUser } from "data/user";
+import { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 type TActionData = {
@@ -40,7 +41,18 @@ export const action = async ({ request }: { request: Request }) => {
 };
 
 export default function Index() {
-  const actionData = useActionData();
+  const actionData = useActionData<TActionData>();
+  const navigate = useNavigate();
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      navigate(`/profile/${JSON.parse(storedUser).id}`);
+    }
+    if (actionData?.user) {
+      localStorage.setItem("user", JSON.stringify(actionData.user));
+      navigate(`/profile/${actionData.user.id}`);
+    }
+  }, [actionData, navigate]);
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-500">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
